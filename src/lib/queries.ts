@@ -45,45 +45,61 @@ const isConfiguredRemoteMediaUrl = (url: string) => {
   }
 };
 
-const getMediaUrl = (image: { filename?: string | null; url?: string | null } | null) => {
-  if (image?.url && isConfiguredRemoteMediaUrl(image.url)) {
-    return image.url;
+type MediaLike = {
+  filename?: unknown;
+  url?: unknown;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object";
+
+const getMediaUrl = (image: MediaLike | null | undefined) => {
+  const url = typeof image?.url === "string" ? image.url : null;
+  const filename = typeof image?.filename === "string" ? image.filename : null;
+
+  if (url && isConfiguredRemoteMediaUrl(url)) {
+    return url;
   }
 
-  if (image?.url && !isAbsoluteUrl(image.url)) {
-    return image.url;
+  if (url && !isAbsoluteUrl(url)) {
+    return url;
   }
 
-  if (image?.filename) {
-    return `/media/${image.filename}`;
+  if (filename) {
+    return `/media/${filename}`;
   }
 
   return "/senovio-logo.webp";
 };
 
 type ProductImageRow = {
-  image?: number | { filename?: string | null; url?: string | null } | null;
+  image?: unknown;
   isCover?: boolean | null;
   fromLegacy?: boolean | null;
 };
 
-const getSavedProductImageUrls = (product: { productImages?: ProductImageRow[] | null }) => {
-  const productImages = (product.productImages ?? []).filter(
-    (item) => item.image && !item.fromLegacy,
-  );
+const getSavedProductImageUrls = (product: unknown) => {
+  const productImages =
+    isRecord(product) && Array.isArray(product.productImages)
+      ? (product.productImages as ProductImageRow[])
+      : [];
+  const savedProductImages = productImages.filter((item) => item.image && !item.fromLegacy);
 
-  if (productImages.length === 0) {
+  if (savedProductImages.length === 0) {
     return [];
   }
 
-  const coverIndex = productImages.findIndex((item) => item.isCover);
+  const coverIndex = savedProductImages.findIndex((item) => item.isCover);
   const orderedImages =
     coverIndex > 0
-      ? [productImages[coverIndex], ...productImages.filter((_, index) => index !== coverIndex)]
-      : productImages;
+      ? [
+          savedProductImages[coverIndex],
+          ...savedProductImages.filter((_, index) => index !== coverIndex),
+        ]
+      : savedProductImages;
 
   return orderedImages
-    .map((item) => (typeof item.image === "object" ? getMediaUrl(item.image) : null))
+    .map((item) => (isRecord(item.image) ? getMediaUrl(item.image) : null))
     .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
 };
 
