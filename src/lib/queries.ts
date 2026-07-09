@@ -50,8 +50,19 @@ type MediaLike = {
   url?: unknown;
 };
 
+type GalleryItem = {
+  image?: unknown;
+};
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object";
+
+const getString = (value: unknown, fallback = "") => (typeof value === "string" ? value : fallback);
+
+const getNumber = (value: unknown, fallback = 0) => (typeof value === "number" ? value : fallback);
+
+const getBoolean = (value: unknown, fallback = false) =>
+  typeof value === "boolean" ? value : fallback;
 
 const getMediaUrl = (image: MediaLike | null | undefined) => {
   const url = typeof image?.url === "string" ? image.url : null;
@@ -103,6 +114,11 @@ const getSavedProductImageUrls = (product: unknown) => {
     .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
 };
 
+const getGalleryImageUrls = (gallery: unknown) =>
+  (Array.isArray(gallery) ? (gallery as GalleryItem[]) : [])
+    .map((galleryItem) => (isRecord(galleryItem.image) ? getMediaUrl(galleryItem.image) : null))
+    .filter((galleryImage): galleryImage is string => Boolean(galleryImage));
+
 /**
  * Fetch all active products from Payload CMS.
  * Returns an empty array if the CMS has no products or on error.
@@ -121,33 +137,30 @@ export async function getActiveProducts(): Promise<ProductData[]> {
       },
     });
 
-    return result.docs.map((product) => {
-      const image = typeof product.image === "object" ? product.image : null;
+    return result.docs.map((product): ProductData => {
+      const productRecord: Record<string, unknown> = isRecord(product) ? product : {};
+      const image = isRecord(productRecord.image) ? productRecord.image : null;
       const savedProductImages = getSavedProductImageUrls(product);
-      const cmsGallery = (product.gallery ?? [])
-        .map((galleryItem) =>
-          typeof galleryItem.image === "object" ? getMediaUrl(galleryItem.image) : null,
-        )
-        .filter((galleryImage): galleryImage is string => Boolean(galleryImage));
+      const cmsGallery = getGalleryImageUrls(productRecord.gallery);
       const gallery = savedProductImages.length > 0 ? savedProductImages.slice(1) : cmsGallery;
 
       return {
-        id: String(product.id),
-        name: product.name,
-        slug: product.slug,
+        id: String(productRecord.id),
+        name: getString(productRecord.name),
+        slug: getString(productRecord.slug),
         image: savedProductImages[0] ?? getMediaUrl(image),
         gallery,
-        packSize: product.packSize,
-        composition: product.composition,
-        effects: product.effects,
-        uses: product.uses,
-        sideEffects: product.sideEffects,
-        highlights: (product.highlights ?? []).map(
+        packSize: getString(productRecord.packSize),
+        composition: getString(productRecord.composition),
+        effects: getString(productRecord.effects),
+        uses: getString(productRecord.uses),
+        sideEffects: getString(productRecord.sideEffects),
+        highlights: (Array.isArray(productRecord.highlights) ? productRecord.highlights : []).map(
           (highlight: { label: string; id?: string | null }) => highlight.label,
         ),
-        dosageForm: product.dosageForm ?? null,
-        featured: product.featured ?? false,
-        order: product.order ?? 0,
+        dosageForm: typeof productRecord.dosageForm === "string" ? productRecord.dosageForm : null,
+        featured: getBoolean(productRecord.featured),
+        order: getNumber(productRecord.order),
       };
     });
   } catch (error) {
@@ -173,19 +186,27 @@ export async function getPublishedJobOpenings(): Promise<JobOpeningData[]> {
       },
     });
 
-    return result.docs.map((opening) => ({
-      id: String(opening.id),
-      title: opening.title,
-      department: opening.department,
-      location: opening.location,
-      employmentType: opening.employmentType,
-      summary: opening.summary,
-      responsibilities: (opening.responsibilities ?? []).map(
-        (responsibility: { item: string; id?: string | null }) => responsibility.item,
-      ),
-      applicationEmail: opening.applicationEmail ?? "office@senovio.in",
-      externalApplicationUrl: opening.externalApplicationUrl ?? null,
-    }));
+    return result.docs.map((opening): JobOpeningData => {
+      const openingRecord: Record<string, unknown> = isRecord(opening) ? opening : {};
+
+      return {
+        id: String(openingRecord.id),
+        title: getString(openingRecord.title),
+        department: getString(openingRecord.department),
+        location: getString(openingRecord.location),
+        employmentType: getString(openingRecord.employmentType),
+        summary: getString(openingRecord.summary),
+        responsibilities: (Array.isArray(openingRecord.responsibilities)
+          ? openingRecord.responsibilities
+          : []
+        ).map((responsibility: { item: string; id?: string | null }) => responsibility.item),
+        applicationEmail: getString(openingRecord.applicationEmail, "office@senovio.in"),
+        externalApplicationUrl:
+          typeof openingRecord.externalApplicationUrl === "string"
+            ? openingRecord.externalApplicationUrl
+            : null,
+      };
+    });
   } catch (error) {
     console.error("Failed to fetch job openings from CMS.", error);
     return [];

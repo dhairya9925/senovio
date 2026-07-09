@@ -61,7 +61,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,
-      max: Number(process.env.DATABASE_POOL_MAX ?? 5),
+      max: Number(process.env.DATABASE_POOL_MAX ?? 2),
     },
   }),
   editor: lexicalEditor(),
