@@ -5,9 +5,9 @@ import type { Map as LeafletMapInstance } from "leaflet";
 import { MapPin } from "lucide-react";
 import { companyAddressInline } from "@/lib/company";
 
-const SENOVIO_LAT = 26.1445;
-const SENOVIO_LNG = 91.7362;
-const DEFAULT_ZOOM = 15;
+const SENOVIO_LAT = 26.1516125;
+const SENOVIO_LNG = 91.742828125;
+const DEFAULT_ZOOM = 17;
 
 interface LeafletMapProps {
   /** Override latitude */

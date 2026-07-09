@@ -32,9 +32,9 @@ export const metadata: Metadata = {
 const heroImage = "/hero-4.png";
 
 const labImage = "/man-contact.png";
-const guwahatiLat = 26.1445;
-const guwahatiLng = 91.7362;
-const mapsLink = `https://www.google.com/maps/search/?api=1&query=${guwahatiLat},${guwahatiLng}`;
+const guwahatiLat = 26.1516125;
+const guwahatiLng = 91.742828125;
+const mapsLink = "https://maps.app.goo.gl/8ALxSbh9yqGmdqxv6";
 
 export default function ContactPage() {
   return (
@@ -87,7 +87,7 @@ export default function ContactPage() {
         <LeafletMap
           lat={guwahatiLat}
           lng={guwahatiLng}
-          zoom={15}
+          zoom={17}
           popupText={companyAddressInline}
         />
       </section>
