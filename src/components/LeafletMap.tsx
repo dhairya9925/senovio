@@ -6,7 +6,7 @@ import { MapPin } from "lucide-react";
 import { companyAddressInline } from "@/lib/company";
 
 const SENOVIO_LAT = 26.1516125;
-const SENOVIO_LNG = 91.742828125;
+const SENOVIO_LNG = 91.74305;
 const DEFAULT_ZOOM = 17;
 
 interface LeafletMapProps {

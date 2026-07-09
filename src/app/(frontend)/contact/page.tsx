@@ -33,7 +33,7 @@ const heroImage = "/hero-4.png";
 
 const labImage = "/man-contact.png";
 const guwahatiLat = 26.1516125;
-const guwahatiLng = 91.742828125;
+const guwahatiLng = 91.74305;
 const mapsLink = "https://maps.app.goo.gl/8ALxSbh9yqGmdqxv6";
 
 export default function ContactPage() {
