@@ -47,95 +47,122 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
     });
   }, [catalogProducts, searchTerm]);
 
-
   const scrollToCatalog = () => {
     document.getElementById("catalog-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="w-full bg-white">
-      {/* Hero Section: Split Asymmetrical */}
-      <section className="relative w-full min-h-[560px] flex items-center bg-[#ecf5fe] overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div
-            className="w-full h-full bg-cover bg-center opacity-35"
-            style={{ backgroundImage: "url('/hero-4.png')" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#ecf5fe] via-[#ecf5fe]/95 to-transparent" />
-        </div>
-        <div className="relative z-10 max-w-[1280px] mx-auto px-4 md:px-8 w-full grid grid-cols-1 md:grid-cols-12 gap-6 py-20">
-          <div className="md:col-span-7 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 mb-6">
-              <span className="h-px w-8 bg-[#610000]" />
-              <span className="text-xs font-semibold text-[#610000] uppercase tracking-widest">
+      {/* Hero Section */}
+      <section className="relative w-full overflow-hidden bg-[#fbf7f4]">
+        <div className="absolute inset-x-0 top-0 h-px bg-[#610000]/20" aria-hidden="true" />
+        <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-stretch lg:min-h-[calc(100svh-80px)] lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,0.78fr)]">
+          <div className="flex flex-col justify-center px-4 py-12 sm:px-8 sm:py-14 lg:py-12 lg:pr-12">
+            <div className="mb-5 inline-flex items-center gap-3">
+              <span className="h-px w-10 bg-[#610000]" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#610000]">
                 Product Catalog
               </span>
             </div>
-            <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight text-[#141d23] mb-6 max-w-2xl">
+            <h1 className="max-w-3xl font-serif text-4xl font-bold leading-[1.08] text-[#141d23] sm:text-5xl lg:text-[52px]">
               Innovative Healthcare Solutions for Women&apos;s Wellness
             </h1>
-            <p className="text-lg leading-8 text-neutral-600 mb-4 max-w-xl">
-              At Senovio Healthcare, every product is developed with one purpose — to improve
-              health outcomes while maintaining the highest standards of safety, quality, and
-              clinical effectiveness.
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[#516169] lg:text-[17px]">
+              At Senovio Healthcare, every product is developed with one purpose — to improve health
+              outcomes while maintaining the highest standards of safety, quality, and clinical
+              effectiveness.
             </p>
-            <p className="text-base font-semibold text-[#141d23] mb-3">
-              Our portfolio focuses primarily on:
-            </p>
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 max-w-md">
-              {[
-                "Infertility Management",
-                "Gynaecology",
-                "Women\u2019s Wellness",
-                "Pregnancy Care",
-                "Hormonal Health",
-                "Nutraceuticals",
-              ].map((area) => (
-                <li key={area} className="flex items-center gap-2 text-sm text-neutral-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#610000] shrink-0" />
-                  {area}
-                </li>
-              ))}
-            </ul>
-            <p className="text-base leading-7 text-neutral-600 italic mb-8 max-w-xl">
+
+            <div className="mt-6 border-l-2 border-[#610000] pl-5">
+              <p className="text-base font-semibold text-[#141d23]">
+                Our portfolio focuses primarily on:
+              </p>
+              <ul className="mt-4 flex max-w-2xl flex-wrap gap-2 sm:gap-2.5">
+                {[
+                  "Infertility Management",
+                  "Gynaecology",
+                  "Women\u2019s Wellness",
+                  "Pregnancy Care",
+                  "Hormonal Health",
+                  "Nutraceuticals",
+                ].map((area) => (
+                  <li
+                    key={area}
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded border border-[#e3beb8] bg-white px-2.5 py-2 text-xs font-medium text-[#5a403c] shadow-sm sm:min-h-10 sm:gap-2 sm:px-3.5 sm:text-sm"
+                  >
+                    <CheckCircle2
+                      className="h-3.5 w-3.5 shrink-0 text-[#610000] sm:h-4 sm:w-4"
+                      aria-hidden="true"
+                    />
+                    {area}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="mt-5 max-w-2xl text-base italic leading-7 text-[#5a403c]">
               Each formulation reflects our commitment to scientific excellence and compassionate
               care.
             </p>
-            <div className="flex gap-4">
+            <div className="mt-7 flex">
               <button
                 type="button"
                 onClick={scrollToCatalog}
-                className="bg-[#610000] text-white text-sm font-semibold px-8 py-3.5 rounded hover:bg-[#920703] transition-all custom-shadow-soft active:scale-[0.98] inline-flex items-center gap-2"
+                className="inline-flex min-h-11 items-center gap-2 rounded bg-[#610000] px-7 py-2.5 text-sm font-semibold text-white shadow-interactive transition hover:-translate-y-0.5 hover:bg-[#920703] active:translate-y-0"
               >
                 Explore Catalog
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Sticky Search */}
-      <section
-        id="catalog-section"
-        className="border-b border-neutral-200/50 bg-white sticky top-20 z-40 shadow-sm"
-      >
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-4 flex items-center justify-end gap-4">
-          <div className="hidden lg:flex items-center relative">
-            <Search className="absolute left-3 text-neutral-400 h-4 w-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              className="pl-10 pr-4 py-2 border border-neutral-200 rounded-full bg-[#f6faff] text-sm focus:outline-none focus:border-[#610000] focus:ring-1 focus:ring-[#610000] w-64 transition-all"
-              placeholder="Search products..."
+          <div className="relative min-h-[320px] overflow-hidden bg-[#141d23] lg:min-h-full">
+            <Image
+              src="/hero-4.png"
+              alt=""
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 42vw"
+              className="object-cover"
             />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-[#141d23]/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-[#fbf7f4] lg:via-transparent lg:to-transparent"
+              aria-hidden="true"
+            />
+            <div className="absolute inset-y-10 left-0 hidden w-px bg-[#610000]/40 lg:block" />
+            <div className="absolute bottom-0 left-0 right-0 h-3 bg-[#610000]" aria-hidden="true" />
           </div>
         </div>
       </section>
 
       {/* Main product listings and grid */}
-      <section className="py-20 max-w-[1280px] mx-auto px-4 md:px-8 bg-white">
+      <section
+        id="catalog-section"
+        className="max-w-[1280px] mx-auto bg-white px-4 py-16 md:px-8 lg:py-18"
+      >
+        <div className="mb-10 flex flex-col gap-5 border-b border-neutral-200 pb-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="mb-2 font-serif text-3xl font-medium text-[#141d23]">Our Products</h2>
+            <p className="text-sm font-medium text-neutral-500">
+              Showing {filteredProducts.length} of {catalogProducts.length} clinical formulations
+            </p>
+          </div>
+
+          <div className="relative w-full md:max-w-sm">
+            <Search
+              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8e706b]"
+              aria-hidden="true"
+            />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="h-12 w-full rounded border border-[#e3beb8] bg-white pl-11 pr-4 text-sm text-[#141d23] shadow-sm transition placeholder:text-[#8e706b]/75 focus:border-[#610000] focus:outline-none focus:ring-2 focus:ring-[#610000]/10"
+              placeholder="Search products..."
+            />
+          </div>
+        </div>
+
         {/* Important Safety Disclaimer */}
         <div className="mb-12 rounded-lg border border-neutral-200 bg-[#ffdad4]/30 p-5 shadow-sm sm:p-6">
           <div className="flex gap-4">
@@ -147,29 +174,12 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
                 Important Safety Disclaimer
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a403c]">
-                The information below is general, educational, and intended for patient awareness. It must not be considered a substitute for professional medical advice, diagnosis, or treatment from a qualified medical practitioner. Always consult your doctor before starting, stopping, or altering any medication.
+                The information below is general, educational, and intended for patient awareness.
+                It must not be considered a substitute for professional medical advice, diagnosis,
+                or treatment from a qualified medical practitioner. Always consult your doctor
+                before starting, stopping, or altering any medication.
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-          <div>
-            <h2 className="font-serif text-3xl font-medium text-[#141d23] mb-2">Our Products</h2>
-            <p className="text-sm text-neutral-500 font-medium">
-              Showing {filteredProducts.length} of {catalogProducts.length} clinical formulations
-            </p>
-          </div>
-          {/* Search bar for mobile view since desktop search is hidden on mobile */}
-          <div className="lg:hidden relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 h-4 w-4" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-full bg-[#f6faff] text-sm focus:outline-none focus:border-[#610000] focus:ring-1 focus:ring-[#610000] transition-all"
-              placeholder="Search products..."
-            />
           </div>
         </div>
 
@@ -378,10 +388,11 @@ function ProductDialog({ product }: { product: ProductData }) {
                   onClick={() => setActiveImageIndex(index)}
                   aria-label={`Show ${product.name} image ${index + 1}`}
                   aria-pressed={activeImageIndex === index}
-                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded border bg-white transition hover:scale-105 ${activeImageIndex === index
-                    ? "border-[#610000] ring-2 ring-[#610000]/25"
-                    : "border-neutral-200 opacity-75 hover:border-[#610000] hover:opacity-100"
-                    }`}
+                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded border bg-white transition hover:scale-105 ${
+                    activeImageIndex === index
+                      ? "border-[#610000] ring-2 ring-[#610000]/25"
+                      : "border-neutral-200 opacity-75 hover:border-[#610000] hover:opacity-100"
+                  }`}
                 >
                   <Image src={image} alt="" fill sizes="56px" className="object-contain p-1.5" />
                 </button>
@@ -473,8 +484,9 @@ function DetailRow({
 }) {
   return (
     <div
-      className={`grid gap-3 bg-white p-4 sm:grid-cols-[28px_1fr] ${last ? "" : "border-b border-[#e3beb8]"
-        }`}
+      className={`grid gap-3 bg-white p-4 sm:grid-cols-[28px_1fr] ${
+        last ? "" : "border-b border-[#e3beb8]"
+      }`}
     >
       <div className="flex h-7 w-7 items-center justify-center rounded bg-[#ffdad4]/55 text-[#610000]">
         {icon}
