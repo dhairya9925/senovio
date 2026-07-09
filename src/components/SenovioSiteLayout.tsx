@@ -44,7 +44,7 @@ const navItems = [
 const legalLinks = ["Privacy Policy", "Terms", "Product Catalog", "Certifications"];
 
 const medicalDisclaimer =
-  "The content on this website is intended for informational purposes only and should not be considered a substitute for professional medical advice. Please consult a qualified healthcare professional and refer to the approved prescribing information before using any product.";
+  "The information provided on this website is intended solely for educational purposes and should not replace professional medical advice. Prescription medicines should be used only under the supervision of qualified healthcare professionals.";
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");

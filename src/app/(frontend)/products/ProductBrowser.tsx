@@ -73,11 +73,12 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
               </span>
             </div>
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight text-[#141d23] mb-6 max-w-2xl">
-              Advanced Therapeutics for Modern Healthcare
+              Innovative Healthcare Solutions for Women&apos;s Wellness
             </h1>
             <p className="text-lg leading-8 text-neutral-600 mb-10 max-w-xl">
-              Discover our comprehensive range of clinically proven formulations, designed with
-              precision to support medical professionals and improve patient outcomes globally.
+              Explore our focused range of clinically proven formulations across infertility
+              management, gynaecology, pregnancy care, hormonal health, and nutraceuticals
+              — each developed with scientific excellence and compassionate care.
             </p>
             <div className="flex gap-4">
               <button
@@ -158,10 +159,7 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
                 Important Safety Disclaimer
               </h2>
               <p className="mt-2 text-sm leading-6 text-[#5a403c]">
-                The information provided is intended solely for educational purposes. It should not
-                replace professional medical advice, diagnosis, or treatment. All medicines should
-                be prescribed and used only under the supervision of a qualified registered medical
-                practitioner.
+                The information below is general, educational, and intended for patient awareness. It must not be considered a substitute for professional medical advice, diagnosis, or treatment from a qualified medical practitioner. Always consult your doctor before starting, stopping, or altering any medication.
               </p>
             </div>
           </div>
@@ -392,11 +390,10 @@ function ProductDialog({ product }: { product: ProductData }) {
                   onClick={() => setActiveImageIndex(index)}
                   aria-label={`Show ${product.name} image ${index + 1}`}
                   aria-pressed={activeImageIndex === index}
-                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded border bg-white transition hover:scale-105 ${
-                    activeImageIndex === index
-                      ? "border-[#610000] ring-2 ring-[#610000]/25"
-                      : "border-neutral-200 opacity-75 hover:border-[#610000] hover:opacity-100"
-                  }`}
+                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded border bg-white transition hover:scale-105 ${activeImageIndex === index
+                    ? "border-[#610000] ring-2 ring-[#610000]/25"
+                    : "border-neutral-200 opacity-75 hover:border-[#610000] hover:opacity-100"
+                    }`}
                 >
                   <Image src={image} alt="" fill sizes="56px" className="object-contain p-1.5" />
                 </button>
@@ -488,9 +485,8 @@ function DetailRow({
 }) {
   return (
     <div
-      className={`grid gap-3 bg-white p-4 sm:grid-cols-[28px_1fr] ${
-        last ? "" : "border-b border-[#e3beb8]"
-      }`}
+      className={`grid gap-3 bg-white p-4 sm:grid-cols-[28px_1fr] ${last ? "" : "border-b border-[#e3beb8]"
+        }`}
     >
       <div className="flex h-7 w-7 items-center justify-center rounded bg-[#ffdad4]/55 text-[#610000]">
         {icon}
