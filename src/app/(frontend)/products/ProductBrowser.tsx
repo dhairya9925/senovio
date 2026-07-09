@@ -47,7 +47,6 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
     });
   }, [catalogProducts, searchTerm]);
 
-  const featuredProduct = catalogProducts.find((p) => p.featured) ?? catalogProducts[0];
 
   const scrollToCatalog = () => {
     document.getElementById("catalog-section")?.scrollIntoView({ behavior: "smooth" });
@@ -75,10 +74,32 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
             <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight text-[#141d23] mb-6 max-w-2xl">
               Innovative Healthcare Solutions for Women&apos;s Wellness
             </h1>
-            <p className="text-lg leading-8 text-neutral-600 mb-10 max-w-xl">
-              Explore our focused range of clinically proven formulations across infertility
-              management, gynaecology, pregnancy care, hormonal health, and nutraceuticals
-              — each developed with scientific excellence and compassionate care.
+            <p className="text-lg leading-8 text-neutral-600 mb-4 max-w-xl">
+              At Senovio Healthcare, every product is developed with one purpose — to improve
+              health outcomes while maintaining the highest standards of safety, quality, and
+              clinical effectiveness.
+            </p>
+            <p className="text-base font-semibold text-[#141d23] mb-3">
+              Our portfolio focuses primarily on:
+            </p>
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 max-w-md">
+              {[
+                "Infertility Management",
+                "Gynaecology",
+                "Women\u2019s Wellness",
+                "Pregnancy Care",
+                "Hormonal Health",
+                "Nutraceuticals",
+              ].map((area) => (
+                <li key={area} className="flex items-center gap-2 text-sm text-neutral-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#610000] shrink-0" />
+                  {area}
+                </li>
+              ))}
+            </ul>
+            <p className="text-base leading-7 text-neutral-600 italic mb-8 max-w-xl">
+              Each formulation reflects our commitment to scientific excellence and compassionate
+              care.
             </p>
             <div className="flex gap-4">
               <button
@@ -91,39 +112,6 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
               </button>
             </div>
           </div>
-          {featuredProduct ? (
-            <div className="hidden md:flex md:col-span-5 relative justify-end items-center">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button
-                    type="button"
-                    className="w-full max-w-md aspect-[4/5] rounded-xl overflow-hidden custom-shadow-soft border border-neutral-200/60 relative group text-left cursor-pointer"
-                  >
-                    <div className="absolute inset-0 bg-[#f6faff] p-12 flex items-center justify-center">
-                      <Image
-                        src={featuredProduct.image}
-                        alt={featuredProduct.name}
-                        width={320}
-                        height={300}
-                        className="object-contain max-h-[280px] w-auto transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent flex items-end p-6">
-                      <div>
-                        <span className="bg-white text-[#610000] text-xs font-semibold px-3 py-1 rounded-full mb-2 inline-block shadow-sm">
-                          Featured
-                        </span>
-                        <h3 className="font-serif text-2xl font-semibold text-white">
-                          {featuredProduct.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </button>
-                </DialogTrigger>
-                <ProductDialog product={featuredProduct} />
-              </Dialog>
-            </div>
-          ) : null}
         </div>
       </section>
 
