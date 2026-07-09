@@ -1,0 +1,35 @@
+import nextPlugin from "@next/eslint-plugin-next";
+import js from "@eslint/js";
+import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  {
+    ignores: [".next", "out", "next-env.d.ts", "src/app/(payload)/admin/importMap.js"],
+  },
+  {
+    plugins: nextPlugin.flatConfig.coreWebVitals.plugins,
+    rules: {
+      ...nextPlugin.flatConfig.coreWebVitals.rules,
+      "@next/next/no-img-element": "off",
+    },
+  },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      "react-hooks": reactHooks,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  eslintPluginPrettier,
+);
