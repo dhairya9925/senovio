@@ -7,6 +7,7 @@ const r2PublicHost = new URL(r2PublicUrl).hostname;
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

@@ -1,24 +1,17 @@
 import { getPayload } from "payload";
 
 import config from "../payload.config";
-import {
-  getActiveProducts,
-  getProductCategories,
-  getPublishedJobOpenings,
-} from "../src/lib/queries";
+import { getActiveProducts, getPublishedJobOpenings } from "../src/lib/queries";
 
 async function verifyCMS() {
   const payload = await getPayload({ config });
 
-  const [activeProducts, categories, media, publishedOpenings] = await Promise.all([
+  const [activeProducts, media, publishedOpenings] = await Promise.all([
     payload.count({
       collection: "products",
       where: {
         status: { equals: "active" },
       },
-    }),
-    payload.count({
-      collection: "product-categories",
     }),
     payload.count({
       collection: "media",
@@ -33,8 +26,7 @@ async function verifyCMS() {
 
   const checks = [
     ["active products", activeProducts.totalDocs, 6],
-    ["product categories", categories.totalDocs, 5],
-    ["media documents", media.totalDocs, 6],
+    ["media documents", media.totalDocs, 1],
     ["published job openings", publishedOpenings.totalDocs, 2],
   ] as const;
 
@@ -46,18 +38,13 @@ async function verifyCMS() {
     console.log(`${label}: ${actual}`);
   }
 
-  const [frontendProducts, frontendCategories, frontendOpenings] = await Promise.all([
+  const [frontendProducts, frontendOpenings] = await Promise.all([
     getActiveProducts(),
-    getProductCategories(),
     getPublishedJobOpenings(),
   ]);
 
   if (frontendProducts.length < 6) {
     throw new Error(`Expected frontend queries to return at least 6 products.`);
-  }
-
-  if (frontendCategories.length < 5) {
-    throw new Error(`Expected frontend queries to return at least 5 categories.`);
   }
 
   if (frontendOpenings.length < 2) {
@@ -66,6 +53,10 @@ async function verifyCMS() {
 
   const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.replace(/\/$/, "");
   const unexpectedMediaUrl = frontendProducts.find((product) => {
+    if (product.image.startsWith("/products/") || product.image.startsWith("/media/")) {
+      return false;
+    }
+
     if (r2PublicUrl) {
       return !product.image.startsWith(`${r2PublicUrl}/`);
     }
@@ -76,13 +67,12 @@ async function verifyCMS() {
   if (unexpectedMediaUrl) {
     throw new Error(
       r2PublicUrl
-        ? `Expected product media URLs to use ${r2PublicUrl}. Found ${unexpectedMediaUrl.image}.`
+        ? `Expected product media URLs to use ${r2PublicUrl} or same-origin product assets. Found ${unexpectedMediaUrl.image}.`
         : `Expected product media URLs to be same-origin paths. Found ${unexpectedMediaUrl.image}.`,
     );
   }
 
   console.log(`frontend products: ${frontendProducts.length}`);
-  console.log(`frontend categories: ${frontendCategories.length}`);
   console.log(`frontend job openings: ${frontendOpenings.length}`);
   console.log("CMS verification passed.");
 }

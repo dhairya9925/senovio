@@ -9,6 +9,57 @@ const toSlug = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+type ProductImageRow = {
+  image?: number | { id?: number | string | null } | null;
+  isCover?: boolean | null;
+  fromLegacy?: boolean | null;
+  id?: string | null;
+};
+
+type ProductData = {
+  name?: string;
+  slug?: string;
+  image?: ProductImageRow["image"];
+  gallery?: Array<{ image?: ProductImageRow["image"]; id?: string | null }> | null;
+  productImages?: ProductImageRow[] | null;
+};
+
+const normalizeProductImages = (data?: ProductData | null) => {
+  if (!data) {
+    return data;
+  }
+
+  if (data.name && !data.slug) {
+    data.slug = toSlug(data.name);
+  }
+
+  const productImages = Array.isArray(data.productImages) ? data.productImages : [];
+
+  if (productImages.length === 0) {
+    return data;
+  }
+
+  const selectedCoverIndex = productImages.findIndex((item) => item.isCover);
+  const coverIndex = selectedCoverIndex >= 0 ? selectedCoverIndex : 0;
+  const normalizedProductImages = productImages.map((item, index) => ({
+    ...item,
+    isCover: index === coverIndex,
+  }));
+  const coverImage = normalizedProductImages[coverIndex]?.image;
+
+  data.productImages = normalizedProductImages;
+
+  if (coverImage) {
+    data.image = coverImage;
+  }
+
+  data.gallery = normalizedProductImages
+    .filter((item, index) => index !== coverIndex && item.image)
+    .map((item) => ({ image: item.image }));
+
+  return data;
+};
+
 export const Products: CollectionConfig = {
   slug: "products",
   access: {
@@ -20,18 +71,38 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     description: "Pharmaceutical product catalog. Manage product details, images, and visibility.",
-    defaultColumns: ["name", "category", "dosageForm", "status", "updatedAt"],
+    defaultColumns: ["name", "dosageForm", "status", "updatedAt"],
     group: "Products",
     listSearchableFields: ["name", "composition", "slug"],
   },
   hooks: {
-    beforeValidate: [
-      ({ data }) => {
-        if (data?.name && !data.slug) {
-          data.slug = toSlug(data.name);
+    afterRead: [
+      ({ doc }) => {
+        if (Array.isArray(doc.productImages) && doc.productImages.length > 0) {
+          return doc;
         }
 
-        return data;
+        const legacyImages = [
+          doc.image,
+          ...((doc.gallery ?? []) as Array<{ image?: ProductImageRow["image"] }>).map(
+            (item) => item.image,
+          ),
+        ].filter(Boolean);
+
+        if (legacyImages.length > 0) {
+          doc.productImages = legacyImages.map((image, index) => ({
+            fromLegacy: true,
+            image,
+            isCover: index === 0,
+          }));
+        }
+
+        return doc;
+      },
+    ],
+    beforeValidate: [
+      ({ data }) => {
+        return normalizeProductImages(data as ProductData | null | undefined);
       },
     ],
   },
@@ -51,22 +122,59 @@ export const Products: CollectionConfig = {
       },
     },
     {
-      name: "category",
-      type: "relationship",
-      relationTo: "product-categories",
-      required: true,
-      admin: {
-        description: "Primary product category.",
-      },
-    },
-    {
       name: "image",
       type: "upload",
       relationTo: "media",
-      required: true,
       admin: {
-        description: "Product packaging image (shown on card and detail popup).",
+        hidden: true,
+        description: "Compatibility field. Automatically set from the selected cover image.",
       },
+    },
+    {
+      name: "gallery",
+      type: "array",
+      admin: {
+        hidden: true,
+        description: "Compatibility field. Automatically set from non-cover product images.",
+      },
+      fields: [
+        {
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "productImages",
+      type: "array",
+      required: true,
+      minRows: 1,
+      admin: {
+        description:
+          "Add, remove, and reorder product images. Select one row as the cover image shown on cards and first in the detail popup. If multiple rows are selected, the first selected row becomes the cover.",
+        initCollapsed: false,
+      },
+      fields: [
+        {
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          required: true,
+          admin: {
+            description: "Product image.",
+          },
+        },
+        {
+          name: "isCover",
+          type: "checkbox",
+          defaultValue: false,
+          admin: {
+            description: "Use this image as the cover image.",
+          },
+        },
+      ],
     },
     {
       name: "composition",
@@ -98,6 +206,7 @@ export const Products: CollectionConfig = {
         { label: "Sachet", value: "sachet" },
         { label: "Gel", value: "gel" },
         { label: "Suppository", value: "suppository" },
+        { label: "Softgel", value: "softgel" },
       ],
       admin: {
         position: "sidebar",

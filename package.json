@@ -13,7 +13,6 @@
     "start": "next start",
     "reset:supabase": "tsx scripts/reset-supabase.ts",
     "seed": "tsx --env-file=.env scripts/seed.ts",
-    "sync:r2-products": "tsx --env-file=.env scripts/sync-r2-assets.ts",
     "typecheck": "tsc --noEmit",
     "verify:cms": "NODE_ENV=production tsx --env-file=.env scripts/verify-cms.ts",
     "verify": "npm run lint && npm run typecheck && npm run build && npm run verify:cms",

@@ -31,6 +31,7 @@ next-env.d.ts
 # Payload CMS (auto-generated)
 # ======================
 media/
+public/products/
 *.db
 payload-types.ts
 # src/app/(payload)/admin/importMap.js

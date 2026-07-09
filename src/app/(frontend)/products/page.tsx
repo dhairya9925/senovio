@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SenovioSiteLayout } from "@/components/SenovioSiteLayout";
-import { getActiveProducts, getProductCategories } from "@/lib/queries";
+import { getActiveProducts } from "@/lib/queries";
 import { ProductBrowser } from "./ProductBrowser";
 
 export const metadata: Metadata = {
@@ -20,18 +20,14 @@ export const metadata: Metadata = {
   },
 };
 
-const heroImage = "/hero-4.png";
-const disclaimer =
-  "The information provided is intended solely for educational purposes. It should not replace professional medical advice, diagnosis, or treatment. All medicines should be prescribed and used only under the supervision of a qualified registered medical practitioner.";
-
 export const revalidate = 60;
 
 export default async function ProductsPage() {
-  const [products, categories] = await Promise.all([getActiveProducts(), getProductCategories()]);
+  const products = await getActiveProducts();
 
   return (
     <SenovioSiteLayout activePath="/products">
-      <ProductBrowser products={products} categories={categories} />
+      <ProductBrowser products={products} />
     </SenovioSiteLayout>
   );
 }

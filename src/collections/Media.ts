@@ -11,12 +11,55 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: "media",
+    formatOptions: {
+      format: "webp",
+      options: {
+        effort: 4,
+        quality: 82,
+      },
+    },
     imageSizes: [
-      { name: "thumbnail", width: 150, height: 150, position: "centre" },
-      { name: "card", width: 370, height: 290, position: "centre" },
-      { name: "product", width: 570, height: 570, position: "centre" },
+      {
+        name: "thumbnail",
+        width: 150,
+        height: 150,
+        position: "centre",
+        formatOptions: {
+          format: "webp",
+          options: {
+            effort: 4,
+            quality: 82,
+          },
+        },
+      },
+      {
+        name: "card",
+        width: 370,
+        height: 290,
+        position: "centre",
+        formatOptions: {
+          format: "webp",
+          options: {
+            effort: 4,
+            quality: 82,
+          },
+        },
+      },
+      {
+        name: "product",
+        width: 570,
+        height: 570,
+        position: "centre",
+        formatOptions: {
+          format: "webp",
+          options: {
+            effort: 4,
+            quality: 82,
+          },
+        },
+      },
     ],
-    mimeTypes: ["image/*"],
+    mimeTypes: ["image/jpeg", "image/png", "image/webp"],
     adminThumbnail: "thumbnail",
   },
   admin: {

@@ -5,8 +5,7 @@ export type ProductData = {
   name: string;
   slug: string;
   image: string;
-  category: string;
-  categorySlug: string;
+  gallery: string[];
   packSize: string;
   composition: string;
   effects: string;
@@ -15,14 +14,6 @@ export type ProductData = {
   highlights: string[];
   dosageForm: string | null;
   featured: boolean;
-  order: number;
-};
-
-export type CategoryData = {
-  id: string;
-  name: string;
-  slug: string;
-  productCount: number;
   order: number;
 };
 
@@ -36,15 +27,6 @@ export type JobOpeningData = {
   responsibilities: string[];
   applicationEmail: string;
   externalApplicationUrl: string | null;
-};
-
-const bundledProductImageUrls: Record<string, string> = {
-  "argivio-sachet": "/product-placeholder.png",
-  "et-gest-sr-200mg": "/product-placeholder.png",
-  "hicium-tablets": "/product-placeholder.png",
-  "l-metio-d-capsules": "/product-placeholder.png",
-  "senofert-f-tablets": "/product-placeholder.png",
-  "senofert-m-tablets": "/product-placeholder.png",
 };
 
 const isAbsoluteUrl = (url: string) => /^https?:\/\//i.test(url);
@@ -63,18 +45,9 @@ const isConfiguredRemoteMediaUrl = (url: string) => {
   }
 };
 
-const getMediaUrl = (
-  image: { filename?: string | null; url?: string | null } | null,
-  productSlug: string,
-) => {
+const getMediaUrl = (image: { filename?: string | null; url?: string | null } | null) => {
   if (image?.url && isConfiguredRemoteMediaUrl(image.url)) {
     return image.url;
-  }
-
-  const bundledImageUrl = bundledProductImageUrls[productSlug];
-
-  if (bundledImageUrl) {
-    return bundledImageUrl;
   }
 
   if (image?.url && !isAbsoluteUrl(image.url)) {
@@ -86,6 +59,32 @@ const getMediaUrl = (
   }
 
   return "/senovio-logo.webp";
+};
+
+type ProductImageRow = {
+  image?: number | { filename?: string | null; url?: string | null } | null;
+  isCover?: boolean | null;
+  fromLegacy?: boolean | null;
+};
+
+const getSavedProductImageUrls = (product: { productImages?: ProductImageRow[] | null }) => {
+  const productImages = (product.productImages ?? []).filter(
+    (item) => item.image && !item.fromLegacy,
+  );
+
+  if (productImages.length === 0) {
+    return [];
+  }
+
+  const coverIndex = productImages.findIndex((item) => item.isCover);
+  const orderedImages =
+    coverIndex > 0
+      ? [productImages[coverIndex], ...productImages.filter((_, index) => index !== coverIndex)]
+      : productImages;
+
+  return orderedImages
+    .map((item) => (typeof item.image === "object" ? getMediaUrl(item.image) : null))
+    .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
 };
 
 /**
@@ -107,16 +106,21 @@ export async function getActiveProducts(): Promise<ProductData[]> {
     });
 
     return result.docs.map((product) => {
-      const category = typeof product.category === "object" ? product.category : null;
       const image = typeof product.image === "object" ? product.image : null;
+      const savedProductImages = getSavedProductImageUrls(product);
+      const cmsGallery = (product.gallery ?? [])
+        .map((galleryItem) =>
+          typeof galleryItem.image === "object" ? getMediaUrl(galleryItem.image) : null,
+        )
+        .filter((galleryImage): galleryImage is string => Boolean(galleryImage));
+      const gallery = savedProductImages.length > 0 ? savedProductImages.slice(1) : cmsGallery;
 
       return {
         id: String(product.id),
         name: product.name,
         slug: product.slug,
-        image: getMediaUrl(image, product.slug),
-        category: category?.name ?? "Uncategorized",
-        categorySlug: category?.slug ?? "uncategorized",
+        image: savedProductImages[0] ?? getMediaUrl(image),
+        gallery,
         packSize: product.packSize,
         composition: product.composition,
         effects: product.effects,
@@ -132,51 +136,6 @@ export async function getActiveProducts(): Promise<ProductData[]> {
     });
   } catch (error) {
     console.error("Failed to fetch products from CMS.", error);
-    return [];
-  }
-}
-
-/**
- * Fetch all product categories from Payload CMS with product counts.
- * Returns an empty array if the CMS has no categories or on error.
- */
-export async function getProductCategories(): Promise<CategoryData[]> {
-  try {
-    const payload = await getPayload();
-
-    const result = await payload.find({
-      collection: "product-categories",
-      limit: 50,
-      sort: "order",
-    });
-
-    const activeProducts = await payload.find({
-      collection: "products",
-      depth: 0,
-      limit: 100,
-      where: {
-        status: { equals: "active" },
-      },
-    });
-
-    const productCountByCategory = activeProducts.docs.reduce<Record<string, number>>(
-      (counts, product) => {
-        const categoryId = String(product.category);
-        counts[categoryId] = (counts[categoryId] ?? 0) + 1;
-        return counts;
-      },
-      {},
-    );
-
-    return result.docs.map((category) => ({
-      id: String(category.id),
-      name: category.name,
-      slug: category.slug,
-      productCount: productCountByCategory[String(category.id)] ?? 0,
-      order: category.order ?? 0,
-    }));
-  } catch (error) {
-    console.error("Failed to fetch product categories from CMS.", error);
     return [];
   }
 }
