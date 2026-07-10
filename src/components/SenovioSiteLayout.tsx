@@ -26,7 +26,9 @@ export type RoutePath =
   | "/products"
   | "/careers"
   | "/faqs"
-  | "/contact";
+  | "/contact"
+  | "/privacy-policy"
+  | "/terms";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -38,7 +40,11 @@ const navItems = [
   { label: "Contact Us", to: "/contact" },
 ] as const satisfies ReadonlyArray<{ label: string; to: RoutePath }>;
 
-const legalLinks = ["Privacy Policy", "Terms", "Product Catalog", "Certifications"];
+const legalLinks = [
+  { label: "Privacy Policy", to: "/privacy-policy" },
+  { label: "Terms", to: "/terms" },
+  { label: "Product Catalog", to: "/products" },
+] as const satisfies ReadonlyArray<{ label: string; to: RoutePath }>;
 
 const medicalDisclaimer =
   "The information provided on this website is intended solely for educational purposes and should not replace professional medical advice. Prescription medicines should be used only under the supervision of qualified healthcare professionals.";
@@ -589,15 +595,18 @@ function SiteFooter({ activePath }: { activePath: RoutePath }) {
         <div>
           <h2 className="text-sm font-bold uppercase tracking-wider text-[#aeafb0]">Legal</h2>
           <nav className="mt-6 grid gap-3" aria-label="Legal navigation">
-            {legalLinks.map((label) => (
-              <a
-                key={label}
-                href="#"
-                className="inline-flex w-fit items-center gap-3 text-sm font-semibold text-[#aeafb0] transition hover:translate-x-1 hover:text-white"
+            {legalLinks.map((item) => (
+              <Link
+                key={item.to}
+                href={item.to}
+                className={cx(
+                  "inline-flex w-fit items-center gap-3 text-sm font-semibold transition hover:translate-x-1",
+                  item.to === activePath ? "text-[#ffb4a8]" : "text-[#aeafb0] hover:text-white",
+                )}
               >
                 <ChevronRight className="h-4 w-4 text-[#ffb4a8]" aria-hidden="true" />
-                {label}
-              </a>
+                {item.label}
+              </Link>
             ))}
           </nav>
         </div>
