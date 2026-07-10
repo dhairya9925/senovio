@@ -17,6 +17,7 @@ import {
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
@@ -24,12 +25,22 @@ import {
 } from "@/components/ui/dialog";
 import type { ProductData } from "@/lib/queries";
 
+const medicalDisclaimerLines = [
+  "The information provided on this website regarding pharmaceutical products is intended solely for educational and informational purposes.",
+  "It should not replace professional medical advice, diagnosis, or treatment.",
+  "All medicines should be prescribed and used only under the supervision of a qualified registered medical practitioner.",
+  "Patients should never self-medicate or alter prescribed treatment without consulting their healthcare provider.",
+  "Senovio Healthcare Private Limited does not assume responsibility for any consequences arising from the misuse of products or reliance on information presented on this website.",
+  "Always consult your physician before beginning or changing any medical treatment.",
+];
+
 type ProductBrowserProps = {
   products: ProductData[];
 };
 
 export function ProductBrowser({ products }: ProductBrowserProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
   const catalogProducts = products;
 
   const filteredProducts = useMemo(() => {
@@ -53,6 +64,28 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
 
   return (
     <div className="w-full bg-white">
+      <Dialog open={isDisclaimerOpen} onOpenChange={setIsDisclaimerOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-2xl border border-[#e3beb8] bg-white p-0 shadow-2xl sm:rounded-lg">
+          <div className="border-b border-[#e3beb8] bg-[#ffdad4]/35 px-6 py-5 pr-12">
+            <DialogTitle className="font-serif text-2xl font-semibold text-[#141d23]">
+              Medical Disclaimer
+            </DialogTitle>
+          </div>
+          <DialogDescription className="grid gap-3 px-6 pb-2 pt-1 text-sm leading-6 text-[#5a403c]">
+            {medicalDisclaimerLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </DialogDescription>
+          <div className="flex justify-end px-6 pb-6">
+            <DialogClose className="inline-flex min-h-11 items-center justify-center rounded bg-[#610000] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#920703] focus:outline-none focus:ring-2 focus:ring-[#610000]/25">
+              I Understand
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden bg-[#fbf7f4]">
         <div className="absolute inset-x-0 top-0 h-px bg-[#610000]/20" aria-hidden="true" />
@@ -278,13 +311,25 @@ function ProductDialogCard({ product }: { product: ProductData }) {
   );
 }
 
+const isArgivioProduct = (product: ProductData) =>
+  [product.name, product.slug].some((value) => value.toLowerCase().includes("argivio"));
+
+const isIncorrectArgivioImage = (image: string) => {
+  const normalizedImage = image.toLowerCase();
+
+  return normalizedImage.includes("argivio-4") || normalizedImage.includes("senofert-f");
+};
+
 function ProductDialog({ product }: { product: ProductData }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isImageZoomActive, setIsImageZoomActive] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const productImages = useMemo(
-    () => Array.from(new Set([product.image, ...product.gallery].filter(Boolean))),
-    [product.gallery, product.image],
+    () =>
+      Array.from(new Set([product.image, ...product.gallery].filter(Boolean))).filter(
+        (image) => !isArgivioProduct(product) || !isIncorrectArgivioImage(image),
+      ),
+    [product],
   );
   const activeImage = productImages[activeImageIndex] ?? product.image;
   const hasMultipleImages = productImages.length > 1;

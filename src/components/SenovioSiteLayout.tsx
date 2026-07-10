@@ -13,14 +13,11 @@ import {
   Phone,
   Share2,
   ShieldCheck,
-  ShoppingBag,
   X,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { PageImageLoadGate } from "@/components/PageImageLoadGate";
 import { companyAddressLines, companyEmail, companyPhone } from "@/lib/company";
-
-import { useSettings } from "./providers";
 
 export type RoutePath =
   | "/"
@@ -74,7 +71,6 @@ export function SenovioSiteLayout({
 }
 
 function SiteHeader({ activePath }: { activePath: RoutePath }) {
-  const { enableOrderNow } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const getHeaderNavLabel = (item: (typeof navItems)[number]) =>
     item.to === "/products" ? "Our Products" : item.label;
@@ -127,15 +123,6 @@ function SiteHeader({ activePath }: { activePath: RoutePath }) {
           >
             Partner With Us
           </Link>
-          {enableOrderNow && (
-            <Link
-              href="/products"
-              className="hidden items-center justify-center gap-2 h-10 rounded-md bg-[#610000] hover:bg-[#920703] px-5 text-sm font-semibold text-white shadow-sm hover:shadow transition-colors duration-200 md:inline-flex"
-            >
-              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-              Order Now
-            </Link>
-          )}
           <button
             type="button"
             aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -181,15 +168,6 @@ function SiteHeader({ activePath }: { activePath: RoutePath }) {
               >
                 Partner With Us
               </Link>
-              {enableOrderNow && (
-                <Link
-                  href="/products"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded bg-[#610000] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#920703]"
-                >
-                  Order Now
-                </Link>
-              )}
             </div>
           </div>
         </nav>
@@ -246,15 +224,13 @@ export function HomeHero({
   highlight,
   description,
   image,
-  primaryCta,
-  secondaryCta,
+  cta,
 }: {
   title: string;
   highlight: string;
   description: string;
   image: string;
-  primaryCta: { label: string; to: RoutePath };
-  secondaryCta: { label: string; to: RoutePath };
+  cta: { label: string; to: RoutePath };
 }) {
   return (
     <section className="relative flex min-h-[640px] items-center overflow-hidden bg-[#2a2d2e] px-4 py-20 sm:px-6">
@@ -299,10 +275,7 @@ export function HomeHero({
             {description}
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <ButtonLink to={primaryCta.to}>{primaryCta.label}</ButtonLink>
-            <ButtonLink to={secondaryCta.to} variant="outline">
-              {secondaryCta.label}
-            </ButtonLink>
+            <ButtonLink to={cta.to}>{cta.label}</ButtonLink>
           </div>
         </div>
       </div>

@@ -184,12 +184,20 @@ export default function AboutPage() {
       </Section>
 
       <Section>
-        <SectionHeader
-          centered
-          eyebrow="Our Philosophy"
-          title="Two words define our identity"
-          description="Our philosophy extends beyond pharmaceuticals. It is about compassion, responsibility and creating healthier generations."
-        />
+        <div className="mx-auto mb-10 max-w-3xl text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[#610000]">
+            Our Philosophy
+          </p>
+          <h2 className="font-serif text-3xl font-medium text-[#141d23] sm:text-4xl">We Care</h2>
+          <p className="mt-3 font-serif text-xl font-medium text-[#141d23]">
+            Two words define our identity
+          </p>
+          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-[#610000]" />
+          <p className="mt-4 text-base leading-7 text-[#5a403c]">
+            Our philosophy extends beyond pharmaceuticals. It is about compassion, responsibility
+            and creating healthier generations.
+          </p>
+        </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {philosophyCards.map((item) => (
             <div
@@ -382,6 +390,11 @@ export default function AboutPage() {
           title="Delivering comprehensive pharmaceutical solutions with compassion and excellence"
           description="At Senovio Healthcare, our commitment extends far beyond delivering medicines."
         />
+        <p className="mx-auto -mt-6 mb-10 max-w-3xl text-center text-base leading-7 text-[#5a403c]">
+          We partner with healthcare professionals, distributors, hospitals, fertility centres, and
+          pharmacies to provide reliable pharmaceutical solutions that improve patient outcomes and
+          strengthen healthcare delivery.
+        </p>
         <div className="grid gap-6 lg:grid-cols-2">
           <FeatureCard
             icon={<Stethoscope className="h-6 w-6" aria-hidden="true" />}

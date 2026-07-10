@@ -2,21 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { unstable_cache } from "next/cache";
 import { Providers } from "@/components/providers";
-import { getPayload } from "@/lib/payload";
 import "leaflet/dist/leaflet.css";
 import "@/styles.css";
-
-const getCachedSettings = unstable_cache(
-  async () => {
-    const payload = await getPayload();
-    const settings = await payload.findGlobal({ slug: "site-settings" });
-    return { enableOrderNow: settings.enableOrderNow ?? true };
-  },
-  ["site-settings"],
-  { revalidate: 60 },
-);
 
 const newsreader = Newsreader({
   subsets: ["latin"],
@@ -56,18 +44,9 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  let enableOrderNow = true;
-
-  try {
-    const cached = await getCachedSettings();
-    enableOrderNow = cached.enableOrderNow;
-  } catch (error) {
-    console.error("Failed to fetch site settings:", error);
-  }
-
   return (
     <div className={`${newsreader.variable} ${inter.variable} font-sans`}>
-      <Providers enableOrderNow={enableOrderNow}>{children}</Providers>
+      <Providers>{children}</Providers>
     </div>
   );
 }

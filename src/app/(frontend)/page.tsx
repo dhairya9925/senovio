@@ -49,8 +49,7 @@ const heroSlides: HeroSlide[] = [
     description:
       "At Senovio Healthcare, we believe every family begins with hope. Through innovative fertility and women's healthcare solutions, we are committed to helping millions embrace healthier tomorrows.",
     image: "/hero-1.png",
-    primaryCta: { label: "Explore Products", to: "/products" },
-    secondaryCta: { label: "Partner With Us", to: "/contact" },
+    cta: { label: "About Us", to: "/about" },
   },
   {
     title: "Advancing Women's Healthcare",
@@ -58,8 +57,7 @@ const heroSlides: HeroSlide[] = [
     description:
       "Delivering quality pharmaceutical solutions in Gynaecology and Infertility, empowering healthcare professionals to transform lives.",
     image: "/hero-2.png",
-    primaryCta: { label: "About Us", to: "/about" },
-    secondaryCta: { label: "Our Services", to: "/services" },
+    cta: { label: "Our Services", to: "/services" },
   },
   {
     title: "Supporting Every Step",
@@ -67,8 +65,7 @@ const heroSlides: HeroSlide[] = [
     description:
       "From ovulation induction to pregnancy support, Senovio Healthcare stands beside doctors and patients with trusted therapeutic solutions.",
     image: "/hero-3.png",
-    primaryCta: { label: "Product Range", to: "/products" },
-    secondaryCta: { label: "Contact Us", to: "/contact" },
+    cta: { label: "Our Products", to: "/products" },
   },
   {
     title: "Quality You Can Trust",
@@ -76,8 +73,7 @@ const heroSlides: HeroSlide[] = [
     description:
       "Every product reflects our commitment to stringent quality standards, ethical practices, and patient-centric innovation.",
     image: "/hero-4.png",
-    primaryCta: { label: "Explore Products", to: "/products" },
-    secondaryCta: { label: "Partner With Us", to: "/contact" },
+    cta: { label: "Contact Us", to: "/contact" },
   },
   {
     title: "Building Healthier Families",
@@ -85,8 +81,7 @@ const heroSlides: HeroSlide[] = [
     description:
       "We work closely with healthcare professionals to deliver effective, evidence-based solutions for women's health and reproductive wellness.",
     image: "/hero-5.png",
-    primaryCta: { label: "About Us", to: "/about" },
-    secondaryCta: { label: "Contact Us", to: "/contact" },
+    cta: { label: "Careers", to: "/careers" },
   },
 ];
 

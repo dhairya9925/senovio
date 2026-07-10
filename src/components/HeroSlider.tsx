@@ -19,10 +19,8 @@ export interface HeroSlide {
   description: string;
   /** Full-width background image URL */
   image: string;
-  /** Primary call-to-action */
-  primaryCta: { label: string; to: RoutePath };
-  /** Secondary (outline) call-to-action */
-  secondaryCta: { label: string; to: RoutePath };
+  /** Slide call-to-action */
+  cta: { label: string; to: RoutePath };
 }
 
 interface HeroSliderProps {
@@ -110,15 +108,8 @@ export default function HeroSlider({ slides, interval = 5000 }: HeroSliderProps)
           </h1>
           <p className="hero-slider__description">{slide.description}</p>
           <div className="hero-slider__ctas">
-            <Link href={slide.primaryCta.to} className="hero-slider__btn hero-slider__btn--primary">
-              {slide.primaryCta.label}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href={slide.secondaryCta.to}
-              className="hero-slider__btn hero-slider__btn--outline"
-            >
-              {slide.secondaryCta.label}
+            <Link href={slide.cta.to} className="hero-slider__btn hero-slider__btn--primary">
+              {slide.cta.label}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>

@@ -226,7 +226,6 @@ export default function ServicesPage() {
           centered
           eyebrow="Our Services"
           title="Partnering healthcare. Transforming lives."
-          description="Every service is designed to support clinical excellence, business reliability, and patient well-being."
         />
         <div className="grid gap-6 lg:grid-cols-2">
           {services.map((service) => {
